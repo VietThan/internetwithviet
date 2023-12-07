@@ -1,0 +1,14 @@
+[project]
+name = "Internet w/ Viet"
+version = "0.1.0"
+description = "A backend for the internetwithviet.com"
+authors = [
+    {name = "Viet Than", email = "thanhoangviet@gmail.com"},
+]
+dependencies = [
+    "litestar[full]>=2.4.2",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "Viet Than"}
+
