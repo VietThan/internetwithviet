@@ -1,6 +1,6 @@
 # internetwithviet
 
-## Install & Run
+## Local Install & Run
 
 1. Install
 
@@ -11,7 +11,13 @@ $ venv/bin/python -m pip install pdm
 $ venv/bin/pdm install
 ```
 
-2. Run:
+2. Start local db
+
+```shell
+$ ./scripts/init_db.sh
+```
+
+3. Run:
 
 ```shell
 $ venv/bin/litestar --app src.app:app run --debug --reload

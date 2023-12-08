@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "litestar[full]>=2.4.2",
     "aiosqlite>=0.19.0",
+    "psycopg>=3.1.14",
 ]
 requires-python = ">=3.11"
 readme = "README.md"

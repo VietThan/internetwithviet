@@ -15,6 +15,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from src.models import Base, Quotes
 
+from src.configurations import Configs
+
+app_configs = Configs()
 
 @asynccontextmanager
 async def sqlite_connection(app: Litestar) -> AsyncGenerator[None, None]:
