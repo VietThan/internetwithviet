@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:6fe3cedcebdfe8cbbc2a026383e5c926b00ea3e978feea441f0ab8ccd0f30093"
+content_hash = "sha256:97e983f565af99701b61cb900b28f1b635fcf44728c053ca7df77396a06042d7"
 
 [[package]]
 name = "advanced-alchemy"
@@ -21,6 +21,16 @@ dependencies = [
 files = [
     {file = "advanced_alchemy-0.6.0-py3-none-any.whl", hash = "sha256:27cde1f05a19f2f5aa48c9382e865e8f99c2698093f5b280e903a9c60d9c46e6"},
     {file = "advanced_alchemy-0.6.0.tar.gz", hash = "sha256:cc2a5e86148ac926de60cf06034c5c85a847a326445b0c21b2abcce35a588e70"},
+]
+
+[[package]]
+name = "aiosqlite"
+version = "0.19.0"
+requires_python = ">=3.7"
+summary = "asyncio bridge to the standard sqlite3 module"
+files = [
+    {file = "aiosqlite-0.19.0-py3-none-any.whl", hash = "sha256:edba222e03453e094a3ce605db1b970c4b3376264e56f32e2a4959f948d66a96"},
+    {file = "aiosqlite-0.19.0.tar.gz", hash = "sha256:95ee77b91c8d2808bd08a59fbebf66270e9090c3d92ffbf260dc0db0b979577d"},
 ]
 
 [[package]]
