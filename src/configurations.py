@@ -153,3 +153,6 @@ def make_postgres_url(
     LOGGER.debug(f"make_postgres_url made url: {url}")
     
     return url
+
+def make_sqlite_url(name: str = "internetwithviet") -> str:
+    return f"sqlite:///{name}.db"

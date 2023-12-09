@@ -10,5 +10,5 @@ class Quotes(Base):
 	quote = Column(Text, nullable=False, default="Hello, World!")
 	created_tstamp = Column(DateTime(timezone=True), nullable=True, server_default=func.now())
 	modified_tstamp = Column(DateTime(timezone=True), nullable=True, onupdate=func.now())
-	
+
 	__table_args__= (UniqueConstraint("quote", name="uniq_quote_key"),)
