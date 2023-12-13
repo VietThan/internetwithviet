@@ -8,7 +8,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from src.configurations import make_postgres_url, make_sqlite_url
-from src.models import Base
+from src import Base
 
 USE_TWOPHASE = False
 

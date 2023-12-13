@@ -1,101 +1,53 @@
-from litestar import Litestar, get, post, put
+from database import postgres_connection, provide_postgres_session, provide_sqlite_session, sqlite_connection
+from litestar import Litestar, get, Router
 from litestar.contrib.sqlalchemy.plugins import SQLAlchemySerializationPlugin
-from litestar.datastructures import State
-from litestar.exceptions import ClientException, NotFoundException
-from litestar.status_codes import HTTP_409_CONFLICT
+from litestar.response import File
+from litestar.openapi import OpenAPIConfig
+from litestar.openapi.spec import Tag
 
-from contextlib import asynccontextmanager
-from typing import Optional
-from collections.abc import AsyncGenerator
+import pathlib
 
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from src.configurations import Configs
+from src.quotes.router import QuotesAPI
 
-from src.models import Base, Quotes
-
-from src.configurations import Configs, make_postgres_url
-
+# initializing configs
 app_configs = Configs()
 
-@asynccontextmanager
-async def sqlite_connection(app: Litestar) -> AsyncGenerator[None, None]:
-    sqlite_engine = getattr(app.state, "sqlite_engine", None)
-    if sqlite_engine is None:
-        sqlite_engine = create_async_engine("sqlite+aiosqlite:///internetwithviet.db", echo=True)
-        app.state.sqlite_engine = sqlite_engine
-    async with sqlite_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    try:
-        yield
-    finally:
-        await sqlite_engine.dispose()
-
-@asynccontextmanager
-async def postgres_connection(app: Litestar) -> AsyncGenerator[None, None]:
-    postgres_engine = getattr(app.state, "postgres_engine", None)
-    if postgres_engine is None:
-        postgres_engine = create_async_engine(make_postgres_url(), echo=True)
-        app.state.postgres_engine = postgres_engine
-    async with postgres_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    try:
-        yield
-    finally:
-        await postgres_engine.dispose()
-
-sessionmaker = async_sessionmaker(expire_on_commit=False)
-
-
-async def provide_sqlite_session(state: State) -> AsyncGenerator[AsyncSession, None]:
-    async with sessionmaker(bind=state.sqlite_engine) as sqlite_session:
-        try:
-            async with sqlite_session.begin():
-                yield sqlite_session
-        except IntegrityError as exc:
-            raise ClientException(
-                status_code=HTTP_409_CONFLICT,
-                detail=str(exc),
-            ) from exc
-        
-async def provide_postgres_session(state: State) -> AsyncGenerator[AsyncSession, None]:
-    async with sessionmaker(bind=state.postgres_engine) as postgres_session:
-        try:
-            async with postgres_session.begin():
-                yield postgres_session
-        except IntegrityError as exc:
-            raise ClientException(
-                status_code=HTTP_409_CONFLICT,
-                detail=str(exc),
-            ) from exc
-
-@get("/")
+@get("/", summary="Handler function that returns a greeting dictionary.")
 async def hello_world() -> dict[str, str]:
     """Handler function that returns a greeting dictionary."""
     return {"hello": "world"}
 
-@get("/ping")
+@get("/ping", summary="Ping!")
 async def ping() -> dict[str, str]:
-    """Handler function that returns a greeting dictionary."""
     return {"hello": "world"}
 
-async def get_all_quotes(session: AsyncSession) -> list[Quotes]:
-    query = select(Quotes)
-    result = await session.execute(query)
-    return result.scalars().all()
+@get('/favicon.ico', summary="Returns favicon requested by browser" )
+async def favicon() -> File:
+    path = pathlib.Path(__file__).parent / "static/crylaugh2.ico"
+    return File(
+        path=path,
+        filename="favicon.ico"
+    )
 
-@get("/quotes")
-async def get_quotes(sqlite_session: AsyncSession) -> list[Quotes]:
-    return await get_all_quotes(sqlite_session)
-
+api_router = Router(
+    path="/api", 
+    route_handlers=[QuotesAPI],   
+)
 
 app = Litestar(
-    [hello_world, ping, get_quotes],
+    [hello_world, ping, favicon, api_router],
+    openapi_config=OpenAPIConfig(
+        title="Internet With Viet Backend",
+        version='0.1',
+        tags=[
+            Tag(name="Quotes", description="Routes to interact with Quotes data")
+        ],
+    ),
     dependencies={
         "sqlite_session": provide_sqlite_session,
         "postgres_session": provide_postgres_session
-    }, # DI into
+    }, # DI into  
     lifespan=[sqlite_connection, postgres_connection], # connection lasts lifespan of application
     plugins=[SQLAlchemySerializationPlugin()],
 )

@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Text, Integer, UniqueConstraint, DateTime
 from sqlalchemy.sql import func
+from litestar.contrib.sqlalchemy.dto import SQLAlchemyDTO
 
-from src.models.base_models import Base
+from src.models import Base
 
-class Quotes(Base):
+class QuotesTable(Base):
 	__tablename__ = 'quotes'
 
 	id = Column(Integer, primary_key=True, autoincrement=True)
@@ -11,4 +12,6 @@ class Quotes(Base):
 	created_tstamp = Column(DateTime(timezone=True), nullable=True, server_default=func.now())
 	modified_tstamp = Column(DateTime(timezone=True), nullable=True, onupdate=func.now())
 
-	__table_args__= (UniqueConstraint("quote", name="uniq_quote_key"),)
+	__table_args__= (UniqueConstraint("quote"),)
+
+QuotesDTO = SQLAlchemyDTO[QuotesTable]
