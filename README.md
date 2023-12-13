@@ -2,6 +2,11 @@
 
 ## Local Install & Run
 
+0. Install dependencies
+- pyenv
+    - python3.11
+- docker (engine, compose, cli)
+
 1. Install
 
 ```shell
@@ -11,7 +16,7 @@ $ venv/bin/python -m pip install pdm
 $ venv/bin/pdm install
 ```
 
-2. Start local db
+2. Start local postgres db
 
 ```shell
 $ ./scripts/init_db.sh
