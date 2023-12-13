@@ -13,6 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+import logging
+LOGGER = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def sqlite_connection(app: Litestar) -> AsyncGenerator[None, None]:
@@ -20,6 +23,7 @@ async def sqlite_connection(app: Litestar) -> AsyncGenerator[None, None]:
     if sqlite_engine is None:
         sqlite_engine = create_async_engine("sqlite+aiosqlite:///internetwithviet.db", echo=True)
         app.state.sqlite_engine = sqlite_engine
+    LOGGER.debug(f"app.state.sqlite_engine created {app.state.sqlite_engine}")
     async with sqlite_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     try:

@@ -35,6 +35,8 @@ api_router = Router(
     route_handlers=[QuotesAPI],   
 )
 
+from litestar.di import Provide
+
 app = Litestar(
     [hello_world, ping, favicon, api_router],
     openapi_config=OpenAPIConfig(

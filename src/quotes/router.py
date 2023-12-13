@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.quotes.service import get_all_quotes, create_quote
 from src.quotes.models import QuotesTable, QuotesDTO
-from src.quotes.schemas import WriteQuotes
+from src.quotes.schemas import CreateQuotePayload
 
 import logging
 
@@ -25,9 +25,9 @@ class QuotesAPI(Controller):
         LOGGER.critical(f"sherlock {type(sqlite_session)}")
         return await get_all_quotes(sqlite_session)
     
-    @post('/', dto=WriteQuotes)
-    async def create_new_quote(sqlite_session: AsyncSession, data: QuotesTable) -> None:
-        create_quote(sqlite_session, data.quote)
+    @post('/')
+    async def create_new_quote(sqlite_session: AsyncSession, data: CreateQuotePayload) -> None:
+        await create_quote(sqlite_session, data.quote)
     
 
     
