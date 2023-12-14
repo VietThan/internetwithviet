@@ -1,5 +1,5 @@
 # business logic
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,3 +15,7 @@ async def create_quote(sqlite_session: AsyncSession, quote: str) -> None:
     new_record = QuotesTable()
     new_record.quote = quote
     sqlite_session.add(new_record)
+
+async def get_quotes_count(sqlite_session: AsyncSession) -> int:
+    result = await sqlite_session.execute(select(func.count(QuotesTable.id)))
+    return result.scalar_one()
