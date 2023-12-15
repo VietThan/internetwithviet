@@ -154,5 +154,7 @@ def make_postgres_url(
     
     return url
 
-def make_sqlite_url(name: str = "internetwithviet") -> str:
+def make_sqlite_url(name: str = "internetwithviet", with_aiosqlite: bool = False) -> str:
+    if with_aiosqlite:
+        return f"sqlite+aiosqlite:///{name}.db"
     return f"sqlite:///{name}.db"

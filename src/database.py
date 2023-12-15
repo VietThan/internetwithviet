@@ -1,4 +1,4 @@
-from configurations import make_postgres_url
+from configurations import make_postgres_url, make_sqlite_url
 from litestar.datastructures import State
 from litestar.exceptions import ClientException
 from litestar.status_codes import HTTP_409_CONFLICT
@@ -21,7 +21,7 @@ LOGGER = logging.getLogger(__name__)
 async def sqlite_connection(app: Litestar) -> AsyncGenerator[None, None]:
     sqlite_engine = getattr(app.state, "sqlite_engine", None)
     if sqlite_engine is None:
-        sqlite_engine = create_async_engine("sqlite+aiosqlite:///internetwithviet.db", echo=True)
+        sqlite_engine = create_async_engine(make_sqlite_url(with_aiosqlite=True), echo=True)
         app.state.sqlite_engine = sqlite_engine
     LOGGER.debug(f"app.state.sqlite_engine created {app.state.sqlite_engine}")
     async with sqlite_engine.begin() as conn:
