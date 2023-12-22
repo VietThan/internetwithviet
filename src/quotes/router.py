@@ -9,8 +9,8 @@ from litestar.dto import DTOData
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.quotes.service import get_all_quotes, create_quote, get_quotes_count
-from src.quotes.models import QuotesTable, QuotesDTO
-from src.quotes.schemas import CreateQuotePayload, GetQuotesCountResponse, GetAllQuotesResponse
+from src.quotes.models import QuotesTable, QuotesSQLAlchemyDTO, QuotesDTO
+from src.quotes.schemas import CreateQuotePayload, GetAllQuotesWebResponse, GetQuotesCountResponse, GetAllQuotesResponse
 
 import logging
 
@@ -25,9 +25,17 @@ class QuotesAPI(Controller):
         return await get_all_quotes(sqlite_session)
     
     @get('/all-not-working')
-    async def get_all_quotes_not_working(self, sqlite_session: AsyncSession) -> GetAllQuotesResponse:
-        res = GetAllQuotesResponse(quotes=await get_all_quotes(sqlite_session))
-        LOGGER.critical(f"sherlock {res}")
+    async def get_all_quotes_not_working(self, sqlite_session: AsyncSession) -> GetAllQuotesResponse[QuotesTable]:
+        table_quotes = await get_all_quotes(sqlite_session)
+        res = GetAllQuotesResponse(quotes=[QuotesDTO.from_table(t) for t in table_quotes])
+        LOGGER.critical(res)
+        return res
+    
+    @get('/all-not-working2')
+    async def get_all_quotes_not_working2(self, sqlite_session: AsyncSession) -> GetAllQuotesWebResponse:
+        table_quotes = await get_all_quotes(sqlite_session)
+        res = GetAllQuotesWebResponse(quotes=[QuotesDTO.from_table(t) for t in table_quotes])
+        LOGGER.critical(res)
         return res
 
     @get('/count')

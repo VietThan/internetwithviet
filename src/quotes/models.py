@@ -1,8 +1,15 @@
 from sqlalchemy import Column, Text, Integer, UniqueConstraint, DateTime
 from sqlalchemy.sql import func
 from litestar.contrib.sqlalchemy.dto import SQLAlchemyDTO
+from attrs import define
+from datetime import datetime
 
-from src.models import Base
+from src.models import Base, BaseDTO
+
+from logging import getLogger
+from copy import copy
+
+LOGGER = getLogger(__name__)
 
 class QuotesTable(Base):
 	__tablename__ = 'quotes'
@@ -14,4 +21,12 @@ class QuotesTable(Base):
 
 	__table_args__= (UniqueConstraint("quote"),)
 
-QuotesDTO = SQLAlchemyDTO[QuotesTable]
+QuotesSQLAlchemyDTO = SQLAlchemyDTO[QuotesTable]
+
+
+@define
+class QuotesDTO(BaseDTO):
+	id: int
+	quote: str
+	created_tstamp: datetime
+	modified_tstamp: datetime
