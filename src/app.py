@@ -17,9 +17,11 @@ from src.quotes.router import QuotesAPI
 app_configs = Configs()
 
 @get("/", summary="Handler function that returns a greeting dictionary.")
-async def hello_world() -> dict[str, str]:
-    """Handler function that returns a greeting dictionary."""
-    return {"hello": "world"}
+async def hello_world() -> Template:
+    return Template(
+        template_name="index.html.jinja2", 
+        # context={"name": name}
+    )
 
 @get("/ping", summary="Ping!")
 async def ping() -> dict[str, str]:

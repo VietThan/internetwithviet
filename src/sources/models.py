@@ -11,22 +11,24 @@ from copy import copy
 
 LOGGER = getLogger(__name__)
 
-class QuotesTable(Base):
-	__tablename__ = 'quotes'
+class SourcesTable(Base):
+	__tablename__ = 'sources'
 
 	id = Column(Integer, primary_key=True, autoincrement=True)
-	quote = Column(Text, nullable=False, default="Hello, World!")
+	source_name = Column(Text, nullable=False, default="")
+	source_description = Column(Text, nullable=False, default="")
 	created_tstamp = Column(DateTime(timezone=True), nullable=True, server_default=func.now())
 	modified_tstamp = Column(DateTime(timezone=True), nullable=True, onupdate=func.now())
 
-	__table_args__= (UniqueConstraint("quote"),)
+	__table_args__= (UniqueConstraint("source_name"),)
 
-# QuotesSQLAlchemyDTO = SQLAlchemyDTO[QuotesTable]
+SourcesSQLAlchemyDTO = SQLAlchemyDTO[SourcesTable]
 
 
 @define
-class QuotesDTO(BaseDTO):
+class SourcesDTO(BaseDTO):
 	id: int
-	quote: str
+	source_name: str
+	source_description: str
 	created_tstamp: datetime
 	modified_tstamp: datetime

@@ -1,7 +1,7 @@
 from attrs import define, field
 from litestar.dto import DataclassDTO, DTOConfig
 
-from src.quotes.models import QuotesDTO, QuotesTable, QuotesSQLAlchemyDTO
+from src.quotes.models import QuotesDTO, QuotesTable #, QuotesSQLAlchemyDTO
 from src.schemas import BaseResponse
 
 from typing import Generic, TypeVar
